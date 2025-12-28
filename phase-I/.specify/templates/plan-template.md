@@ -31,7 +31,13 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+- **Spec-First Development**: Specification complete before implementation
+- **AI-Generated Implementation**: Implementation will be generated via Claude Code only
+- **Clean Architecture**: Proper separation of concerns will be maintained
+- **In-Memory Python Console Application**: Will use Python 3.13+, UV package manager, in-memory storage, CLI interface only
+- **Feature Scope - Phase I Only**: Will implement only basic features: Add, Delete, Update, View, Mark Complete/Incomplete
+- **Data Model Constraints**: Will use Python list/dict for storage with ID, Title, Description, Completed status, and timestamp
+- **Security & Validation**: Will include input sanitization and user-friendly error messages
 
 ## Project Structure
 

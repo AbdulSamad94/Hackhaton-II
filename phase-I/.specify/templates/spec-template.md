@@ -84,16 +84,20 @@
 
 ### Functional Requirements
 
-- **FR-001**: System MUST [specific capability, e.g., "allow users to create accounts"]
-- **FR-002**: System MUST [specific capability, e.g., "validate email addresses"]  
-- **FR-003**: Users MUST be able to [key interaction, e.g., "reset their password"]
-- **FR-004**: System MUST [data requirement, e.g., "persist user preferences"]
-- **FR-005**: System MUST [behavior, e.g., "log all security events"]
+- **FR-001**: System MUST allow users to add new tasks with a title and optional description
+- **FR-002**: System MUST allow users to delete existing tasks by ID
+- **FR-003**: System MUST allow users to update task details (title, description) by ID
+- **FR-004**: System MUST allow users to view all tasks with their completion status
+- **FR-005**: System MUST allow users to mark tasks as complete or incomplete by ID
+- **FR-006**: System MUST provide a command-line interface for all operations
+- **FR-007**: System MUST provide user-friendly error messages for invalid operations
 
-*Example of marking unclear requirements:*
+*Constitution compliance requirements:*
 
-- **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
-- **FR-007**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
+- **FR-008**: Implementation MUST follow Spec-Driven Development approach (no code without complete spec)
+- **FR-009**: Implementation MUST be AI-generated via Claude Code only (no manual coding)
+- **FR-010**: System MUST use in-memory storage only (no persistent database)
+- **FR-011**: System MUST use Python standard library only (no external dependencies)
 
 ### Key Entities *(include if feature involves data)*
 

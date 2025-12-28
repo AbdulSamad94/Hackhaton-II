@@ -49,7 +49,7 @@ description: "Task list template for feature implementation"
 **Purpose**: Project initialization and basic structure
 
 - [ ] T001 Create project structure per implementation plan
-- [ ] T002 Initialize [language] project with [framework] dependencies
+- [ ] T002 Initialize Python project with UV package manager
 - [ ] T003 [P] Configure linting and formatting tools
 
 ---
@@ -62,9 +62,9 @@ description: "Task list template for feature implementation"
 
 Examples of foundational tasks (adjust based on your project):
 
-- [ ] T004 Setup database schema and migrations framework
-- [ ] T005 [P] Implement authentication/authorization framework
-- [ ] T006 [P] Setup API routing and middleware structure
+- [ ] T004 Setup in-memory data storage structure
+- [ ] T005 [P] Implement task model with ID, title, description, completed status
+- [ ] T006 [P] Setup CLI argument parsing and command routing
 - [ ] T007 Create base models/entities that all stories depend on
 - [ ] T008 Configure error handling and logging infrastructure
 - [ ] T009 Setup environment configuration management
