@@ -1,0 +1,387 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+venv/
+ENV/
+env/
+.venv
+.env
+
+# UV Package Manager
+.uv/
+uv.lock
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.pytest_cache/
+.hypothesis/
+
+
+# Next.js Frontend
+.next/
+out/
+.vercel
+*.tsbuildinfo
+next-env.d.ts
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+lerna-debug.log*
+
+# TypeScript
+*.tsbuildinfo
+
+# Dependencies
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+
+# API Keys & Secrets (CRITICAL - NEVER COMMIT)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env*.local
+secrets.json
+credentials.json
+*.pem
+*.key
+*.cert
+
+
+# Docker
+*.dockerfile.bak
+docker-compose.override.yml
+
+# Kubernetes
+*.kubeconfig
+kubeconfig.yaml
+.kube/
+
+# Helm
+charts/*.tgz
+.helm/
+
+# Minikube
+.minikube/
+
+# Terraform (if used)
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+terraform.tfvars
+override.tf
+override.tf.json
+
+# Kafka
+kafka-logs/
+zookeeper-data/
+
+# Dapr
+.dapr/
+dapr-logs/
+
+# Cloud Provider Configs
+.azure/
+.gcloud/
+.aws/
+.oci/
+
+# CI/CD
+.github/secrets/
+
+# ============================================
+# DATABASE & PERSISTENCE
+# ============================================
+
+# SQLite (if used for local testing)
+*.sqlite
+*.sqlite3
+*.db
+
+# PostgreSQL
+*.pgdata
+pgdata/
+
+# Database backups
+*.sql
+*.dump
+backups/
+
+# ============================================
+# IDEs & EDITORS
+# ============================================
+
+# VS Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# JetBrains IDEs (PyCharm, WebStorm, IntelliJ)
+.idea/
+*.iml
+*.iws
+*.ipr
+.idea_modules/
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+.vim/
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# ============================================
+# OPERATING SYSTEMS
+# ============================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.directory
+.Trash-*
+.nfs*
+
+# ============================================
+# LOGS & TEMPORARY FILES
+# ============================================
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+pnpm-debug.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+
+# ============================================
+# BUILD ARTIFACTS
+# ============================================
+
+# Compiled output
+dist/
+build/
+out/
+target/
+*.out
+
+# ============================================
+# MEDIA & LARGE FILES
+# ============================================
+
+# Videos (except demo videos - be selective)
+*.mp4
+*.mov
+*.avi
+*.mkv
+# !demo-*.mp4  # Uncomment to allow demo videos
+
+# Images (large originals)
+*.psd
+*.ai
+*.sketch
+
+# Archives
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# ============================================
+# SECURITY & SENSITIVE DATA
+# ============================================
+
+# SSL Certificates
+*.crt
+*.cer
+*.der
+*.pfx
+*.p12
+
+# SSH Keys
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+
+# Service Account Keys
+*-service-account.json
+gcp-key.json
+aws-credentials.json
+
+# API Tokens
+.token
+*.token
+api-keys.txt
+
+# ============================================
+# TESTING & DEBUGGING
+# ============================================
+
+# Test coverage
+coverage/
+.nyc_output/
+test-results/
+junit.xml
+
+# Debug files
+debug.log
+debug-*.log
+.debug/
+
+# ============================================
+# PACKAGE MANAGERS
+# ============================================
+
+# npm
+node_modules/
+npm-debug.log*
+
+# Yarn
+.yarn/
+.yarn-integrity
+yarn-error.log*
+
+# pnpm
+.pnpm-store/
+
+# Bun
+.bun/
+
+# ============================================
+# MONITORING & OBSERVABILITY
+# ============================================
+
+# Prometheus
+prometheus-data/
+
+# Grafana
+grafana-data/
+
+# Application Performance Monitoring
+.apm/
+newrelic_agent.log
+
+# ============================================
+# MISCELLANEOUS
+# ============================================
+
+# Backup files
+*.backup
+*.old
+*.orig
+
+# Lock files (optional - uncomment if you want to ignore)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
+
+# Crash reports
+crash-reports/
+
+# System files
+*.pid
+*.seed
+*.pid.lock
