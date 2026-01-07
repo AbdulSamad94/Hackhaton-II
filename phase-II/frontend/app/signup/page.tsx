@@ -459,7 +459,7 @@ export default function SignupPage() {
             <Button
               variant="outline"
               onClick={() =>
-                (window.location.href = "http://localhost:8000/api/auth/google")
+                (window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`)
               }
               className="h-11 bg-white hover:bg-gray-50 text-slate-700 border-gray-200 transition-all"
             >
@@ -469,7 +469,7 @@ export default function SignupPage() {
             <Button
               variant="outline"
               onClick={() =>
-                (window.location.href = "http://localhost:8000/api/auth/github")
+                (window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/github`)
               }
               className="h-11 bg-white hover:bg-gray-50 text-slate-700 border-gray-200 transition-all"
             >
