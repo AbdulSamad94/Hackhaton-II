@@ -45,7 +45,7 @@ A command-line interface application with basic CRUD operations for managing tas
 
 ---
 
-### Phase 2 🔄 (In Progress)
+### Phase 2 (Completed)
 
 **Build a Todo Full-Stack Web Application**
 
@@ -68,7 +68,7 @@ Transform the console app into a modern web application with persistent database
 
 ---
 
-### Phase 3 ⏳ (Pending)
+### Phase 3 🔄 (In Progress)
 
 **Build a Todo AI-Powered Chatbot Application**
 
