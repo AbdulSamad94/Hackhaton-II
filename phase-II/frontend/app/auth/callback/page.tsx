@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, Suspense } from "react";
+import { useEffect, useRef, Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { storage } from "@/lib/storage";
 
@@ -9,8 +9,19 @@ function AuthCallbackContent() {
   const searchParams = useSearchParams();
   const hasProcessed = useRef(false);
 
-  // Derive error state directly from URL params
-  const token = searchParams.get("token");
+  // Parse hash on client side only - calculate initial value instead of using effect
+  const [hashToken] = useState<string | null>(() => {
+    if (typeof window !== "undefined") {
+      const hash = window.location.hash.substring(1);
+      const params = new URLSearchParams(hash);
+      return params.get("token");
+    }
+    return null;
+  });
+
+  const urlToken = searchParams.get("token");
+  const token = hashToken || urlToken;
+
   const errorParam = searchParams.get("error");
   const error =
     errorParam || (!token ? "No authentication token received" : null);
@@ -22,18 +33,27 @@ function AuthCallbackContent() {
     if (token && !errorParam) {
       hasProcessed.current = true;
 
-      // Save token to localStorage using storage utility
+      // Save token to storage
       storage.setToken(token);
+
+      // Clean up hash from URL
+      if (hashToken && typeof window !== "undefined") {
+        window.history.replaceState(
+          null,
+          "",
+          window.location.pathname + window.location.search
+        );
+      }
 
       // Redirect to dashboard
       setTimeout(() => {
         router.push("/dashboard");
       }, 500);
-    } else {
+    } else if (!token) {
       // Mark as processed for error cases too
       hasProcessed.current = true;
     }
-  }, [token, errorParam, router]);
+  }, [token, errorParam, router, hashToken]);
 
   // Show loading state while processing successful token
   if (token && !error) {

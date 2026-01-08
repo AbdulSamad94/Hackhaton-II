@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
 from database import get_session
 from schemas.user_schemas import UserRead
@@ -17,7 +17,5 @@ async def get_current_user_profile(
     """Get current user profile."""
     user = db.get(User, current_user_id)
     if not user:
-        from fastapi import HTTPException
-
         raise HTTPException(status_code=404, detail="User not found")
     return user

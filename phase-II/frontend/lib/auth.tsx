@@ -17,6 +17,15 @@ export interface User {
   name?: string;
 }
 
+interface ErrorResponse {
+  message?: string;
+  detail?: string;
+  error?: {
+    message?: string;
+    detail?: string;
+  };
+}
+
 interface AuthContextType {
   user: User | null;
   loading: boolean;
@@ -86,7 +95,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
 
       if (result.error) {
-        throw new Error(result.error.message || "Login failed");
+        // Better Auth wraps the error, try to extract the actual message
+        const error = result.error as unknown as ErrorResponse;
+        const errorMessage =
+          result.error.message || error.detail || "Login failed";
+        throw new Error(errorMessage);
       }
 
       // Backend returns { access_token, token_type } in the data property
@@ -119,12 +132,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       router.push("/dashboard");
     } catch (error: unknown) {
+      // If it's already an Error we threw, re-throw it
       if (error instanceof Error) {
         console.error("Login failed:", error.message);
-      } else {
-        console.error("Login failed:", error);
+        throw error;
       }
-      throw error; // Re-throw to be handled by UI
+
+      // Try to extract error message from response
+      if (typeof error === "object" && error !== null) {
+        const errorObj = error as ErrorResponse;
+        const errorMessage =
+          errorObj.message ||
+          errorObj.detail ||
+          errorObj.error?.message ||
+          errorObj.error?.detail ||
+          "Invalid email or password";
+        throw new Error(errorMessage);
+      }
+
+      throw new Error("Invalid email or password");
     }
   };
 
@@ -138,18 +164,35 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
 
       if (result.error) {
-        throw new Error(result.error.message || "Signup failed");
+        // Better Auth wraps the error, try to extract the actual message
+        const error = result.error as unknown as ErrorResponse;
+        const errorMessage =
+          result.error.message || error.detail || "Signup failed";
+        throw new Error(errorMessage);
       }
 
       // After signup, we log the user in
       await login(email, password);
     } catch (error: unknown) {
+      // If it's already an Error we threw, re-throw it
       if (error instanceof Error) {
         console.error("Signup failed:", error.message);
-      } else {
-        console.error("Signup failed:", error);
+        throw error;
       }
-      throw error;
+
+      // Try to extract error message from response
+      if (typeof error === "object" && error !== null) {
+        const errorObj = error as ErrorResponse;
+        const errorMessage =
+          errorObj.message ||
+          errorObj.detail ||
+          errorObj.error?.message ||
+          errorObj.error?.detail ||
+          "Failed to create account. Please try again.";
+        throw new Error(errorMessage);
+      }
+
+      throw new Error("Failed to create account. Please try again.");
     }
   };
 

@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, Response
 from sqlmodel import Session
 from database import get_session
 from services.oauth_service import OAuthService
@@ -37,9 +37,9 @@ async def github_callback(
             expires_delta=timedelta(days=7),
         )
 
-        # Redirect to frontend with token
+        # Use URL hash fragment to pass token (not sent to server, accessible to JS)
         return RedirectResponse(
-            url=f"{settings.frontend_url}/auth/callback?token={access_token}&provider=github"
+            url=f"{settings.frontend_url}/auth/callback?provider=github#token={access_token}"
         )
     except HTTPException as e:
         return RedirectResponse(
@@ -78,9 +78,9 @@ async def google_callback(
             expires_delta=timedelta(days=7),
         )
 
-        # Redirect to frontend with token
+        # Use URL hash fragment to pass token (not sent to server, accessible to JS)
         return RedirectResponse(
-            url=f"{settings.frontend_url}/auth/callback?token={access_token}&provider=google"
+            url=f"{settings.frontend_url}/auth/callback?provider=google#token={access_token}"
         )
     except HTTPException as e:
         return RedirectResponse(

@@ -8,6 +8,9 @@ from routes import tasks, auth, oauth, users
 from database import engine
 from models import SQLModel
 import time
+from fastapi.exceptions import RequestValidationError
+from fastapi.requests import Request
+from fastapi.responses import JSONResponse
 
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
@@ -33,12 +36,12 @@ def create_app() -> FastAPI:
     # Configure CORS
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=[settings.frontend_url],  # Restrict to your frontend's domain in production
+        allow_origins=[
+            settings.frontend_url
+        ],  # Restrict to your frontend's domain in production
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
-        # Expose authorization header to frontend
-        expose_headers=["Authorization"],
     )
 
     # Include API routes
@@ -60,21 +63,17 @@ async def on_startup():
     SQLModel.metadata.create_all(bind=engine)
 
 
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    print(f"Validation error: {exc.errors()}")
+    print(f"Request body: {await request.body()}")
+    return JSONResponse(
+        status_code=422,
+        content={"detail": exc.errors(), "body": str(exc.body)},
+    )
+
+
 if __name__ == "__main__":
     import uvicorn
-    from fastapi.exceptions import RequestValidationError
-    from fastapi.requests import Request
-    from fastapi.responses import JSONResponse
-
-    @app.exception_handler(RequestValidationError)
-    async def validation_exception_handler(
-        request: Request, exc: RequestValidationError
-    ):
-        print(f"Validation error: {exc.errors()}")
-        print(f"Request body: {await request.body()}")
-        return JSONResponse(
-            status_code=422,
-            content={"detail": exc.errors(), "body": str(exc.body)},
-        )
 
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

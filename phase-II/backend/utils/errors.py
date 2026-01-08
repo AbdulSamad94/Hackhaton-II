@@ -26,10 +26,10 @@ class UserNotFoundException(HTTPException):
 
 
 class InvalidCredentialsException(HTTPException):
-    def __init__(self):
+    def __init__(self, message: str = "Invalid email or password"):
         super().__init__(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid credentials",
+            detail=message,
             headers={"WWW-Authenticate": "Bearer"},
         )
 

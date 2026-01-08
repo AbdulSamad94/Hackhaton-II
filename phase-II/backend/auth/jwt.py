@@ -29,7 +29,14 @@ def verify_token(token: str) -> dict:
 
 
 def decode_token(token: str) -> dict:
-    """Decode a JWT token without validation (for debugging purposes)."""
+    """
+    Decode a JWT token without validation.
+    DANGER: This is for debugging purposes ONLY. Do not use in production.
+    """
+    if not settings.debug:
+        raise RuntimeError(
+            "decode_token is for debugging only and is disabled in production."
+        )
     return jwt.decode(
         token,
         settings.secret_key,
