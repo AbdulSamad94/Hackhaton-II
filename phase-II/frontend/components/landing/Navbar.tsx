@@ -63,8 +63,8 @@ export function Navbar({
 
           {/* Auth Actions */}
           <div className="flex items-center gap-4">
-            {isLoggedIn ? (
-              <ProfileDropdown user={user!} logout={logout} />
+            {user ? (
+              <ProfileDropdown user={user} logout={logout} />
             ) : (
               <div className="flex items-center gap-4">
                 <Link

@@ -26,7 +26,8 @@ export default function Home() {
     e.preventDefault();
     const element = document.getElementById(id);
     if (element) {
-      const headerOffset = 100;
+      const navbar = document.querySelector("nav");
+      const headerOffset = navbar ? navbar.offsetHeight + 20 : 100; // Dynamic height + padding, fallback to 100
       const elementPosition = element.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.scrollY - headerOffset;
 

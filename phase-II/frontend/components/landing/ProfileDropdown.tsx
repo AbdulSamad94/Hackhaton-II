@@ -22,10 +22,10 @@ export function ProfileDropdown({
         className="flex items-center gap-2 p-1 pr-3 rounded-full hover:bg-gray-100 transition-colors border border-transparent hover:border-gray-200"
       >
         <div className="w-8 h-8 rounded-full bg-linear-to-tr from-blue-500 to-violet-500 flex items-center justify-center text-white font-medium text-sm shadow-md">
-          {user?.name?.[0] || user?.email?.[0] || "U"}
+          {user.name?.[0] || user.email[0] || "U"}
         </div>
         <span className="text-sm font-medium text-gray-700 hidden sm:block">
-          {user?.name || user?.email?.split("@")[0]}
+          {user.name || user.email.split("@")[0]}
         </span>
         <ChevronDown
           className={`w-4 h-4 text-gray-500 transition-transform ${
@@ -48,7 +48,7 @@ export function ProfileDropdown({
                 Signed in as
               </p>
               <p className="text-sm font-semibold text-gray-900 truncate">
-                {user?.email}
+                {user.email}
               </p>
             </div>
             <Link

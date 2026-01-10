@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { CheckCircle2 } from "lucide-react";
 
 export function Footer() {
@@ -21,19 +22,19 @@ export function Footer() {
             <h4 className="font-semibold text-slate-900 mb-4">Product</h4>
             <ul className="space-y-2 text-sm text-slate-600">
               <li>
-                <a href="#" className="hover:text-blue-600">
+                <Link href="#" className="hover:text-blue-600">
                   Features
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-blue-600">
+                <Link href="#" className="hover:text-blue-600">
                   Pricing
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-blue-600">
+                <Link href="#" className="hover:text-blue-600">
                   API
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -41,19 +42,19 @@ export function Footer() {
             <h4 className="font-semibold text-slate-900 mb-4">Company</h4>
             <ul className="space-y-2 text-sm text-slate-600">
               <li>
-                <a href="#" className="hover:text-blue-600">
+                <Link href="#" className="hover:text-blue-600">
                   About
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-blue-600">
+                <Link href="#" className="hover:text-blue-600">
                   Blog
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-blue-600">
+                <Link href="#" className="hover:text-blue-600">
                   Careers
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -61,14 +62,14 @@ export function Footer() {
             <h4 className="font-semibold text-slate-900 mb-4">Legal</h4>
             <ul className="space-y-2 text-sm text-slate-600">
               <li>
-                <a href="#" className="hover:text-blue-600">
+                <Link href="#" className="hover:text-blue-600">
                   Privacy
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-blue-600">
+                <Link href="#" className="hover:text-blue-600">
                   Terms
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

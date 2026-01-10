@@ -65,9 +65,9 @@ export function FeaturesSection() {
               title: "Team Collaboration",
               desc: "Share projects, assign tasks, and chat in real-time.",
             },
-          ].map((feature, i) => (
+          ].map((feature) => (
             <motion.div
-              key={i}
+              key={feature.title}
               variants={fadeInUp}
               whileHover={{ y: -5 }}
               className="p-8 rounded-2xl bg-slate-50 border border-slate-100 hover:border-blue-100 hover:shadow-lg transition-all"
