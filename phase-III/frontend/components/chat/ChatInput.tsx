@@ -9,21 +9,22 @@ interface ChatInputProps {
 export default function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
   const [inputValue, setInputValue] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const trySendMessage = () => {
     if (inputValue.trim() && !disabled) {
       onSendMessage(inputValue.trim());
       setInputValue("");
     }
   };
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    trySendMessage();
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      if (inputValue.trim() && !disabled) {
-        onSendMessage(inputValue.trim());
-        setInputValue("");
-      }
+      trySendMessage();
     }
   };
 

@@ -1,4 +1,4 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || '/api';
+import apiClient from './api';
 
 export interface ChatRequest {
   message: string;
@@ -12,7 +12,7 @@ export interface ChatResponse {
 }
 
 export interface Message {
-  id: number;
+  id: number | string;
   role: 'user' | 'assistant';
   content: string;
   timestamp: string;
@@ -32,36 +32,12 @@ export async function sendMessage(
   history: Message[],
   conversationId?: number
 ): Promise<ChatResponse> {
-  const token = localStorage.getItem('jwt_token');
-
-  const response = await fetch(`${API_URL}/chat`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    },
-    body: JSON.stringify({
-      message,
-      conversation_id: conversationId,
-      history: history.map(msg => ({ role: msg.role, content: msg.content }))
-    })
+  const response = await apiClient.post<ChatResponse>('/chat', {
+    message,
+    conversation_id: conversationId,
+    history: history.map(msg => ({ role: msg.role, content: msg.content }))
   });
-
-  if (!response.ok) {
-    if (response.status === 401) {
-      // Redirect to login if unauthorized
-      window.location.href = '/login';
-      throw new Error('Unauthorized');
-    } else if (response.status === 429) {
-      throw new Error('Too many requests. Please slow down.');
-    } else if (response.status === 404) {
-      throw new Error('Conversation not found');
-    } else {
-      throw new Error('Failed to send message');
-    }
-  }
-
-  return response.json();
+  return response.data;
 }
 
 /**
@@ -71,29 +47,10 @@ export async function getConversationHistory(
   userId: string,
   conversationId: number
 ): Promise<ConversationHistoryResponse> {
-  const token = localStorage.getItem('jwt_token');
-
-  const response = await fetch(
-    `${API_URL}/${userId}/conversations/${conversationId}`,
-    {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    }
+  const response = await apiClient.get<ConversationHistoryResponse>(
+    `/${userId}/conversations/${conversationId}`
   );
-
-  if (!response.ok) {
-    if (response.status === 401) {
-      window.location.href = '/login';
-      throw new Error('Unauthorized');
-    } else if (response.status === 404) {
-      throw new Error('Conversation not found');
-    } else {
-      throw new Error('Failed to fetch conversation history');
-    }
-  }
-
-  return response.json();
+  return response.data;
 }
 
 /**
@@ -112,31 +69,15 @@ export async function getUserConversations(
   }>;
   total_count: number;
 }> {
-  const token = localStorage.getItem('jwt_token');
   const params = new URLSearchParams();
-
   if (limit) params.append('limit', limit.toString());
   if (offset) params.append('offset', offset.toString());
 
   const queryString = params.toString();
   const url = queryString ?
-    `${API_URL}/${userId}/conversations?${queryString}` :
-    `${API_URL}/${userId}/conversations`;
+    `/${userId}/conversations?${queryString}` :
+    `/${userId}/conversations`;
 
-  const response = await fetch(url, {
-    headers: {
-      'Authorization': `Bearer ${token}`
-    }
-  });
-
-  if (!response.ok) {
-    if (response.status === 401) {
-      window.location.href = '/login';
-      throw new Error('Unauthorized');
-    } else {
-      throw new Error('Failed to fetch conversations');
-    }
-  }
-
-  return response.json();
+  const response = await apiClient.get(url);
+  return response.data;
 }

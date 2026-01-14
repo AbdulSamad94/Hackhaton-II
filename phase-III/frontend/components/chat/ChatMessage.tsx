@@ -37,7 +37,7 @@ export default function ChatMessage({
         }`}
       >
         {/* Name Label */}
-        <span className="text-[10px] text-gray-400 px-1 mb-1 font-medium opactiy-0 group-hover:opacity-100 transition-opacity">
+        <span className="text-[10px] text-gray-400 px-1 mb-1 font-medium opacity-0 group-hover:opacity-100 transition-opacity">
           {isUser ? "You" : "Assistant"}
         </span>
 

@@ -10,6 +10,7 @@ import {
   ChatResponse,
   Message as MessageType,
 } from "@/lib/chatApi";
+import { useAuth } from "@/lib/auth";
 
 import { ChatSize } from "./ChatWidget";
 import { X, Bot } from "lucide-react";
@@ -25,17 +26,13 @@ export default function ChatWindow({
   currentSize,
   onResize,
 }: ChatWindowProps) {
+  const { user } = useAuth();
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [conversationId, setConversationId] = useState<number | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Get current user ID (this would typically come from your auth system)
-  useEffect(() => {
-    // Mock user ID - in a real app, this would come from your auth provider
-    setCurrentUserId("user_123");
-  }, []);
+  const currentUserId = user?.id || null;
 
   // Scroll to bottom when messages change
   useEffect(() => {
@@ -81,7 +78,7 @@ export default function ChatWindow({
 
     // Add user message optimistically
     const userMessage: MessageType = {
-      id: Date.now(),
+      id: crypto.randomUUID(),
       role: "user",
       content: message,
       timestamp: new Date().toISOString(),
@@ -105,7 +102,7 @@ export default function ChatWindow({
 
       // Add AI response
       const aiMessage: MessageType = {
-        id: Date.now() + 1,
+        id: crypto.randomUUID(),
         role: "assistant",
         content: response.response,
         timestamp: response.timestamp,
@@ -139,7 +136,7 @@ export default function ChatWindow({
       }
 
       const errorMessage: MessageType = {
-        id: Date.now() + 1,
+        id: crypto.randomUUID(),
         role: "assistant",
         content: errorMsg,
         timestamp: new Date().toISOString(),
