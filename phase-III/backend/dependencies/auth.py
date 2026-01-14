@@ -7,6 +7,11 @@ from utils.errors import InvalidCredentialsException
 security = HTTPBearer()
 
 
+import logging
+
+logger = logging.getLogger(__name__)
+
+
 def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
 ) -> str:
@@ -17,7 +22,9 @@ def get_current_user(
         payload = verify_jwt_token(token)
         user_id: str = payload.get("sub")
         if user_id is None:
+            logger.error(f"Auth failed: Sub missing in payload: {payload}")
             raise JWTError("Sub missing")
         return user_id
-    except JWTError:
+    except JWTError as e:
+        logger.error(f"Auth failed: Invalid Token: {e}, Token: {token[:10]}...")
         raise InvalidCredentialsException()

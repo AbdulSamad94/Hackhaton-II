@@ -1,12 +1,13 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
 from settings import settings
-from routes import tasks, auth, oauth, users
+from routes import tasks, auth, oauth, users, conversation
 from database import engine
-from models import SQLModel
+from sqlmodel import SQLModel
 import time
 from fastapi.exceptions import RequestValidationError
 from fastapi.requests import Request
@@ -49,6 +50,7 @@ def create_app() -> FastAPI:
     app.include_router(auth.router, prefix=settings.api_prefix, tags=["auth"])
     app.include_router(oauth.router, prefix=settings.api_prefix, tags=["oauth"])
     app.include_router(users.router, prefix=settings.api_prefix, tags=["users"])
+    app.include_router(conversation.router, prefix=settings.api_prefix, tags=["chat"])
 
     return app
 
