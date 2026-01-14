@@ -4,9 +4,9 @@ from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
 from settings import settings
-from routes import tasks, auth, oauth, users
+from routes import tasks, auth, oauth, users, conversation
 from database import engine
-from models import SQLModel
+from sqlmodel import SQLModel
 import time
 from fastapi.exceptions import RequestValidationError
 from fastapi.requests import Request
@@ -49,6 +49,7 @@ def create_app() -> FastAPI:
     app.include_router(auth.router, prefix=settings.api_prefix, tags=["auth"])
     app.include_router(oauth.router, prefix=settings.api_prefix, tags=["oauth"])
     app.include_router(users.router, prefix=settings.api_prefix, tags=["users"])
+    app.include_router(conversation.router, prefix=settings.api_prefix, tags=["chat"])
 
     return app
 
@@ -76,4 +77,4 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("src.main:app", host="0.0.0.0", port=8000, reload=True)
