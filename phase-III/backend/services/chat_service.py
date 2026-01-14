@@ -23,7 +23,7 @@ class ChatService:
                 conversation = session.get(Conversation, request.conversation_id)
                 # Verify ownership
                 if conversation and conversation.user_id != user_id:
-                    raise Exception("Conversation not found for this user")
+                    raise ValueError("Conversation not found for this user")
 
             if not conversation:
                 conversation = Conversation(user_id=user_id, title=request.message[:50])
@@ -45,27 +45,17 @@ class ChatService:
             statement = (
                 select(Message)
                 .where(Message.conversation_id == conversation.id)
-                .order_by(Message.created_at.asc())
+                .order_by(Message.created_at.desc())
+                .limit(20)  # Fetch the last 20 messages
             )
-            # We might want to limit this, but for now let's get all (or last N)
-            # To limit: .offset(...).limit(...) - but we need the *latest* N.
-            # Simpler: Get all and slice in python or use subquery.
-            # Given typical chat length, fetching all for now is okay, or we can optimize later.
             history_messages = session.exec(statement).all()
+            history_messages.reverse()
 
             history_context = "\nChat History:\n"
             for msg in history_messages:
                 history_context += f"{msg.role}: {msg.content}\n"
 
             agent = Agent(name="assistant", instructions=self.instructions, model=model)
-
-            # Combine history and current query (which is already in history_context via DB fetch?
-            # Wait, we just saved it. So history_messages INCLUDES the current message.
-            # So we don't need to append request.message again explicitly in the prompt if we send the whole history.
-            # But the Agent usually expects a "prompt".
-            # Let's verify standard Agent pattern. Usually prompt is the *new* input.
-            # If we send whole history as context, we can say "Current User Query: {request.message}" for clarity
-            # even if it's in the history block.
 
             full_prompt = f"{history_context}\n(System Note: The above history includes the user's latest message. Please respond to it.)"
 

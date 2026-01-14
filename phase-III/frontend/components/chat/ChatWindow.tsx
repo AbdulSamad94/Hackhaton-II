@@ -58,7 +58,7 @@ export default function ChatWindow({
         console.error("Failed to load conversation history:", error);
         // Add error message
         const errorMessage: MessageType = {
-          id: Date.now() + 1,
+          id: crypto.randomUUID(),
           role: "assistant",
           content:
             "Sorry, I'm having trouble thinking right now. Please try again.",
