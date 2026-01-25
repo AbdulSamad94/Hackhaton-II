@@ -11,10 +11,6 @@ from typing import Optional
 mcp = FastMCP("Todo Task Management Server")
 
 # Import existing TaskService
-import sys
-import os
-
-sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from services.task_service import TaskService
 from database import get_session_context
 from sqlmodel import Session

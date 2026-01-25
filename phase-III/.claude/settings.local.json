@@ -5,14 +5,8 @@
       "Bash(.specify/scripts/bash/check-prerequisites.sh --json)",
       "Bash(.specify/scripts/bash/check-prerequisites.sh --json --require-tasks --include-tasks)",
       "Bash(npm install framer-motion)",
-      "Bash(tree -L 2)",
-      "Bash(ls -la \"E:/Abdul samad codes/Hackhaton/GIAIC_Hackhatons/Q4_Specs_Driven_Developement/hackathon-II-todo/backend/\"*)"
+      "Bash(tree -L 2)"
     ]
   },
-  "enabledMcpjsonServers": [
-    "context7",
-    "github",
-    "next-devtools",
-    "neon"
-  ]
+  "enabledMcpjsonServers": ["context7", "github", "next-devtools", "neon"]
 }

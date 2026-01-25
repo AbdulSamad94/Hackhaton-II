@@ -4,11 +4,6 @@ from ai import model, config
 from models.chat import ChatRequest
 from sqlmodel import Session
 from typing import Optional, Dict, Any
-import sys
-import os
-
-# Add backend directory to path to import MCP tools
-sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 from mcp_server.tools.add_task import add_task
 from mcp_server.tools.list_tasks import list_tasks
 from mcp_server.tools.update_task import update_task

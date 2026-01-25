@@ -32,6 +32,7 @@ The MCP Server acts as an intermediary between the AI agent and the existing Tas
 The server exposes 5 task management tools:
 
 ### 1. add_task
+
 - **Purpose**: Create new task for user
 - **Parameters**:
   - `user_id`: User's ID from JWT context (required)
@@ -40,6 +41,7 @@ The server exposes 5 task management tools:
 - **Returns**: `{task_id, title, status, message}`
 
 ### 2. list_tasks
+
 - **Purpose**: List user's tasks with optional filtering
 - **Parameters**:
   - `user_id`: User's ID (required)
@@ -47,6 +49,7 @@ The server exposes 5 task management tools:
 - **Returns**: `{tasks[], count, status}`
 
 ### 3. update_task
+
 - **Purpose**: Update existing task details
 - **Parameters**:
   - `user_id`: User's ID (required)
@@ -56,6 +59,7 @@ The server exposes 5 task management tools:
 - **Returns**: `{task_id, title, description, status}`
 
 ### 4. delete_task
+
 - **Purpose**: Delete a task
 - **Parameters**:
   - `user_id`: User's ID (required)
@@ -63,6 +67,7 @@ The server exposes 5 task management tools:
 - **Returns**: `{task_id, title, status}`
 
 ### 5. complete_task
+
 - **Purpose**: Toggle task completion status
 - **Parameters**:
   - `user_id`: User's ID (required)
@@ -72,12 +77,14 @@ The server exposes 5 task management tools:
 ## Integration Points
 
 ### With Existing Systems
+
 - **TaskService**: Reuses existing `backend/services/task_service.py` for business logic
 - **Database**: Uses existing Neon PostgreSQL with SQLModel ORM via `backend/database.py`
 - **Authentication**: Validates user_id from agent context against JWT authentication
 - **Models/Schemas**: Uses existing task models and schemas from `backend/models/task.py` and `backend/schemas/task_schemas.py`
 
 ### With AI Agent
+
 - Agent connects to MCP Server via MCP protocol
 - Natural language commands are parsed and converted to appropriate tool calls
 - Tool responses are formatted into user-friendly messages
@@ -86,19 +93,19 @@ The server exposes 5 task management tools:
 
 ```
 User: "Add buy milk to my list"
-Agent: [Calls add_task(user_id="user123", title="buy milk")] -> "✓ Added task: Buy milk (ID: 8)"
+Agent: [Calls add_task(title="buy milk")] -> "✓ Added task: Buy milk (ID: 8)"
+
+User: "Complete 'Buy milk'"
+Agent: [Calls complete_task(task_title="Buy milk")] -> "✓ Task 'Buy milk' (ID: 8) marked as complete!"
+
+User: "Update 'buy milk' to 'buy almond milk'"
+Agent: [Calls update_task(task_title="buy milk", title="buy almond milk")] -> "✓ Updated task: 'Buy almond milk' (ID: 8)"
 
 User: "What do I need to do?"
-Agent: [Calls list_tasks(user_id="user123", status="pending")] -> "You have 3 pending tasks:\n1. Buy milk\n2. Call mom\n3. Finish report"
-
-User: "Complete task 8"
-Agent: [Calls complete_task(user_id="user123", task_id=8)] -> "✓ Task 8 marked as complete!"
-
-User: "Update task 5 to 'urgent meeting'"
-Agent: [Calls update_task(user_id="user123", task_id=5, title="urgent meeting")] -> "✓ Updated task 5: Urgent meeting"
+Agent: [Calls list_tasks(status="pending")] -> "You have 3 pending tasks:\n1. Buy milk\n2. Call mom\n3. Finish report"
 
 User: "Delete task 3"
-Agent: [Calls delete_task(user_id="user123", task_id=3)] -> "✓ Deleted task 3: Old task"
+Agent: [Calls delete_task(task_id=3)] -> "✓ Deleted task 'Old task' (ID: 3)"
 ```
 
 ## Security
@@ -112,21 +119,25 @@ Agent: [Calls delete_task(user_id="user123", task_id=3)] -> "✓ Deleted task 3:
 ## Bidirectional Sync
 
 Tasks created via chat appear in web UI and vice versa:
+
 - Chat → MCP Server → TaskService → Database → Web UI
 - Web UI → TaskService → Database → MCP Server → Chat
 
 ## Development
 
 ### Starting the MCP Server
+
 ```bash
 cd backend/mcp_server
 python start_server.py
 ```
 
 ### Testing
+
 The server integrates with the existing test suite. All functionality can be tested through the chat interface.
 
 ### Dependencies
+
 - Official MCP Python SDK (`mcp`)
 - Existing backend dependencies (SQLModel, Pydantic, etc.)
 

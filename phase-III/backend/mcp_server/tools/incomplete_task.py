@@ -5,11 +5,6 @@ Purpose: Mark a task as incomplete by ID or title
 
 from pydantic import Field
 from typing import Dict, Any, Optional
-import sys
-import os
-
-sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
-
 from database import get_session_context
 
 
@@ -44,62 +39,30 @@ async def incomplete_task(
         with get_session_context() as db:
             from services.task_service import TaskService
             from schemas.task_schemas import TaskToggleComplete
-            from models.task import Task
+            from mcp_server.tool_utils import resolve_task
 
+            # Resolve the task using shared logic
+            task, error_response = resolve_task(user_id, db, task_id, task_title)
+            if error_response:
+                return error_response
+
+            # Mark incomplete
             task_service = TaskService()
             task_toggle = TaskToggleComplete(completed=False)
+            updated_task = task_service.toggle_task_complete(
+                user_id, task.id, task_toggle, db
+            )
 
-            # If task_id provided, use it directly
-            if task_id is not None:
-                task = db.get(Task, task_id)
-                if not task or task.user_id != user_id:
-                    return {
-                        "error": f"Task with ID {task_id} not found",
-                        "status": "error",
-                    }
-
-                updated_task = task_service.toggle_task_complete(
-                    user_id, task_id, task_toggle, db
-                )
-                return {
-                    "task_id": updated_task.id,
-                    "title": updated_task.title,
-                    "completed": updated_task.completed,
-                    "status": "incomplete",
-                }
-
-            # If task_title provided, search for matching tasks
-            matching_tasks = task_service.get_tasks_by_title(user_id, task_title, db)
-
-            if not matching_tasks:
-                return {
-                    "error": f"No task found matching '{task_title}'",
-                    "status": "error",
-                }
-
-            # If exactly one match, mark it incomplete
-            if len(matching_tasks) == 1:
-                task = matching_tasks[0]
-                updated_task = task_service.toggle_task_complete(
-                    user_id, task.id, task_toggle, db
-                )
-                return {
-                    "task_id": updated_task.id,
-                    "title": updated_task.title,
-                    "completed": updated_task.completed,
-                    "status": "incomplete",
-                }
-
-            # Multiple matches - ask for disambiguation
-            matches = [
-                {"id": t.id, "title": t.title, "completed": t.completed}
-                for t in matching_tasks
-            ]
             return {
-                "disambiguation": f"Found {len(matching_tasks)} tasks matching '{task_title}'. Please specify which one by ID:",
-                "matches": matches,
-                "status": "needs_clarification",
+                "task_id": updated_task.id,
+                "title": updated_task.title,
+                "completed": updated_task.completed,
+                "status": "incomplete",
             }
 
     except Exception as e:
-        return {"error": str(e), "status": "error"}
+        from sqlalchemy.exc import SQLAlchemyError
+
+        if isinstance(e, SQLAlchemyError):
+            return {"error": f"Database error: {str(e)}", "status": "error"}
+        return {"error": f"Unexpected error: {str(e)}", "status": "error"}

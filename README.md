@@ -64,11 +64,13 @@ Transform the console app into a modern web application with persistent database
 
 **Key Learnings:** Full-stack architecture, REST API design, database modeling, JWT authentication, monorepo organization
 
+Live Demo: https://hackhaton-ii.vercel.app
+
 [View Phase 2 →](./phase-II/README.md)
 
 ---
 
-### Phase 3 🔄 (In Progress)
+### Phase 3 (Completed)
 
 **Build a Todo AI-Powered Chatbot Application**
 
@@ -87,11 +89,13 @@ Add conversational AI interface using natural language to manage tasks through c
 
 **Key Learnings:** AI agent development, MCP architecture, stateless design, conversational UX
 
+Live Demo: https://ai-todo-web.vercel.app
+
 [View Phase 3 →](./phase-III/README.md)
 
 ---
 
-### Phase 4 ⏳ (Pending)
+### Phase 4 🔄 (In Progress)
 
 **Build a Todo Application with Local Kubernetes Deployment**
 
@@ -123,7 +127,6 @@ Production-ready deployment with event-driven architecture, advanced features, a
 **Features:**
 
 - **Advanced Task Management:**
-
   - Recurring tasks (daily, weekly, monthly patterns)
   - Due dates with automatic reminders
   - Priority levels (high, medium, low)
@@ -132,7 +135,6 @@ Production-ready deployment with event-driven architecture, advanced features, a
   - Sort by multiple criteria
 
 - **Event-Driven Architecture:**
-
   - Kafka message streaming for decoupled services
   - Notification service for reminders
   - Recurring task engine for auto-scheduling
@@ -140,7 +142,6 @@ Production-ready deployment with event-driven architecture, advanced features, a
   - Real-time sync across multiple clients
 
 - **Distributed Runtime:**
-
   - Dapr for microservices abstraction
   - Service invocation with built-in retries
   - Pub/Sub for event streaming
@@ -177,14 +178,14 @@ Additional implementations for extra credit:
 
 ## Progress Summary
 
-| Phase     | Status         | Points       | Due Date         |
-| --------- | -------------- | ------------ | ---------------- |
-| Phase 1   | ✅ Completed   | 100/100      | Dec 7, 2025      |
-| Phase 2   | 🔄 In Progress | 0/150        | Dec 14, 2025     |
-| Phase 3   | ⏳ Pending     | 0/200        | Dec 21, 2025     |
-| Phase 4   | ⏳ Pending     | 0/250        | Jan 4, 2026      |
-| Phase 5   | ⏳ Pending     | 0/300        | Jan 18, 2026     |
-| **Total** | **20%**        | **100/1000** | **Jan 18, 2026** |
+| Phase     | Status         | Points       | Completed Date |
+| --------- | -------------- | ------------ | -------------- |
+| Phase 1   | ✅ Completed   | 100/100      | Dec 19, 2025   |
+| Phase 2   | ✅ Completed   | 150/150      | 10-Jan, 2026   |
+| Phase 3   | ✅ Completed   | 200/200      | 25-Jan, 2026   |
+| Phase 4   | 🔄 In Progress | 0/250        | TBD            |
+| Phase 5   | ⏳ Pending     | 0/300        | TBD            |
+| **Total** | **45%**        | **450/1000** | **TBD**        |
 
 ---
 
@@ -235,66 +236,64 @@ Phase 5: + Kafka + Dapr + Cloud Infrastructure
 
 ## Repository Structure
 
-```
 hackathon-II/
 │
-├── README.md                           # This file
+├── README.md # This file
 │
-├── phase-I/                           # Console App
-│   ├── .claude/
-│   ├── .specify/
-│   ├── .history/
-│   ├── specs/
-│   ├── src/
-│   │   ├── __init__.py
-│   │   ├── main.py
-│   │   ├── task_manager.py
-│   │   ├── task.py
-│   │   └── ui.py
-│   │   └── utils.py
-│   ├── CLAUDE.md
-│   ├── README.md
-│   ├── test_todo_app.py
+├── phase-I/ # ✅ Console App
+│ ├── .claude/
+│ ├── .specify/
+│ ├── .history/
+│ ├── specs/
+│ ├── src/
+│ │ ├── **init**.py
+│ │ ├── main.py
+│ │ ├── task_manager.py
+│ │ ├── task.py
+│ │ └── ui.py
+│ │ └── utils.py
+│ ├── CLAUDE.md
+│ ├── README.md
+│ ├── test_todo_app.py
 │
-├── phase-II/                           # 🔄 Web App
-│   ├── README.md
-│   ├── speckit.constitution
-│   ├── specs/
-│   ├── frontend/                       # Next.js
-│   ├── backend/                        # FastAPI
-│   └── CLAUDE.md
+├── phase-II/ # ✅ Web App
+│ ├── README.md
+│ ├── speckit.constitution
+│ ├── specs/
+│ ├── frontend/ # Next.js
+│ ├── backend/ # FastAPI
+│ └── CLAUDE.md
 │
-├── phase-III/                          # ⏳ AI Chatbot
-│   ├── README.md
-│   ├── specs/
-│   ├── frontend/                       # ChatKit
-│   ├── backend/                        # FastAPI + MCP
-│   └── mcp-server/
+├── phase-III/ # ✅ AI Chatbot
+│ ├── README.md
+│ ├── specs/
+│ ├── frontend/ # ChatKit
+│ ├── backend/ # FastAPI + MCP
+│ └── mcp-server/
 │
-├── phase-IV/                           # ⏳ Kubernetes Local
-│   ├── README.md
-│   ├── specs/
-│   ├── docker/
-│   ├── helm-charts/
-│   └── k8s-manifests/
+├── phase-IV/ # 🔄 Kubernetes Local
+│ ├── README.md
+│ ├── specs/
+│ ├── docker/
+│ ├── helm-charts/
+│ └── k8s-manifests/
 │
-└── phase-V/                            # ⏳ Cloud Production
-    ├── README.md
-    ├── specs/
-    ├── services/
-    ├── infrastructure/
-    ├── dapr-components/
-    └── .github/workflows/
-```
+└── phase-V/ # ⏳ Cloud Production
+├── README.md
+├── specs/
+├── services/
+├── infrastructure/
+├── dapr-components/
+└── .github/workflows/
 
 ## Live Deployments
 
-| Phase | Environment      | URL            | Status |
-| ----- | ---------------- | -------------- | ------ |
-| 2     | Vercel           | Coming Soon    | 🔄     |
-| 3     | Vercel + Backend | Coming Soon    | ⏳     |
-| 4     | Minikube (Local) | localhost:8080 | ⏳     |
-| 5     | Cloud Kubernetes | Coming Soon    | ⏳     |
+| Phase | Environment      | URL                               | Status |
+| ----- | ---------------- | --------------------------------- | ------ |
+| 2     | Vercel           | https://hackhaton-ii.vercel.app   | ✅     |
+| 3     | Vercel + Backend | https://ai-todo-web.vercel.app    | ✅     |
+| 4     | Minikube (Local) | --------------------------------- | 🔄     |
+| 5     | Cloud Kubernetes | --------------------------------- | ⏳     |
 
 ---
 
@@ -319,7 +318,3 @@ This hackathon is organized by **[Panaversity](https://panaversity.org)** in col
 - [Panaversity](https://panaversity.org) - Organization website
 
 ---
-
-## License
-
-Educational project for Hackathon II demonstration purposes.

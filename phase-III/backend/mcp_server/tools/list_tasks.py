@@ -5,11 +5,6 @@ Purpose: List user's tasks with optional filtering
 
 from pydantic import Field
 from typing import Dict, Any, List
-import sys
-import os
-
-sys.path.append(os.path.join(os.path.dirname(__file__), "../.."))
-
 from database import get_session_context
 from sqlmodel import select
 
@@ -43,15 +38,14 @@ async def list_tasks(
 
             # Use SQLModel's select instead of session.query
             statement = select(Task).where(Task.user_id == user_id)
-            tasks = db.exec(statement).all()
 
-            # Apply status filter
+            # Apply status filter at the database level
             if status == "pending":
-                filtered_tasks = [task for task in tasks if not task.completed]
+                statement = statement.where(Task.completed == False)
             elif status == "completed":
-                filtered_tasks = [task for task in tasks if task.completed]
-            else:  # status == "all"
-                filtered_tasks = tasks
+                statement = statement.where(Task.completed == True)
+
+            filtered_tasks = db.exec(statement).all()
 
             # Format tasks for MCP response - serialize WITHIN the session context
             tasks_list = [
@@ -72,4 +66,8 @@ async def list_tasks(
             return {"tasks": tasks_list, "count": len(tasks_list), "status": "success"}
 
     except Exception as e:
-        return {"error": str(e), "status": "error"}
+        from sqlalchemy.exc import SQLAlchemyError
+
+        if isinstance(e, SQLAlchemyError):
+            return {"error": f"Database error: {str(e)}", "status": "error"}
+        return {"error": f"Unexpected error: {str(e)}", "status": "error"}

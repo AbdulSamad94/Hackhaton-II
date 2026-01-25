@@ -9,7 +9,7 @@ class TaskService:
     @staticmethod
     def get_tasks_for_user(user_id: str, db: Session) -> List[Task]:
         statement = select(Task).where(Task.user_id == user_id)
-        return db.exec(statement).all()
+        return list(db.exec(statement).all())
 
     @staticmethod
     def create_task(user_id: str, task: TaskCreate, db: Session) -> Task:
