@@ -1,12 +1,11 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Dispatch, SetStateAction } from "react";
 import ChatInput from "./ChatInput";
 import ChatMessage from "./ChatMessage";
 import TypingIndicator from "./TypingIndicator";
 import {
   sendMessage,
-  getConversationHistory,
   ChatResponse,
   Message as MessageType,
 } from "@/lib/chatApi";
@@ -19,17 +18,19 @@ interface ChatWindowProps {
   onClose: () => void;
   currentSize: ChatSize;
   onResize: (size: ChatSize) => void;
+  messages: MessageType[];
+  setMessages: Dispatch<SetStateAction<MessageType[]>>;
 }
 
 export default function ChatWindow({
   onClose,
   currentSize,
   onResize,
+  messages,
+  setMessages,
 }: ChatWindowProps) {
   const { user } = useAuth();
-  const [messages, setMessages] = useState<MessageType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [conversationId, setConversationId] = useState<number | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const currentUserId = user?.id || null;
@@ -42,36 +43,6 @@ export default function ChatWindow({
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-
-  // Load initial conversation if conversationId exists
-  useEffect(() => {
-    const loadConversationHistory = async () => {
-      if (!currentUserId || !conversationId) return;
-
-      try {
-        const response = await getConversationHistory(
-          currentUserId,
-          conversationId
-        );
-        setMessages(response.messages);
-      } catch (error) {
-        console.error("Failed to load conversation history:", error);
-        // Add error message
-        const errorMessage: MessageType = {
-          id: crypto.randomUUID(),
-          role: "assistant",
-          content:
-            "Sorry, I'm having trouble thinking right now. Please try again.",
-          timestamp: new Date().toISOString(),
-        };
-        setMessages((prev) => [...prev, errorMessage]);
-      }
-    };
-
-    if (conversationId && currentUserId) {
-      loadConversationHistory();
-    }
-  }, [conversationId, currentUserId]);
 
   const handleSendMessage = async (message: string) => {
     if (!currentUserId || !message.trim()) return;
@@ -89,16 +60,12 @@ export default function ChatWindow({
 
     try {
       // Pass current messages as history
+      // Note: We don't track conversationId anymore as it's stateless/in-memory
       const response: ChatResponse = await sendMessage(
         message,
-        messages,
-        conversationId ?? undefined
+        messages, // Send FULL history to backend
+        undefined,
       );
-
-      // Update conversation ID if this is the first message
-      if (!conversationId) {
-        setConversationId(response.conversation_id);
-      }
 
       // Add AI response
       const aiMessage: MessageType = {
@@ -109,6 +76,9 @@ export default function ChatWindow({
       };
 
       setMessages((prev) => [...prev, aiMessage]);
+
+      // Dispatch event to refresh tasks in other components
+      window.dispatchEvent(new CustomEvent("tasks-updated"));
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error("Failed to send message:", error);

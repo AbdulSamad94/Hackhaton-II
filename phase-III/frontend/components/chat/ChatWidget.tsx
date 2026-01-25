@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import ChatWindow from "./ChatWindow";
 import { motion } from "framer-motion";
 import { Bot } from "lucide-react";
+import { Message as MessageType } from "@/lib/chatApi";
 
 export type ChatSize = "small" | "medium" | "large" | "full";
 
@@ -17,6 +18,10 @@ const sizeVariants = {
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [size, setSize] = useState<ChatSize>("medium");
+
+  // Lifted state for persistence across open/close
+  // This is in-memory only (refresh clears it), as requested
+  const [messages, setMessages] = useState<MessageType[]>([]);
 
   // Handle keyboard shortcuts (Alt+C or Cmd+C to open chat, Escape to close)
   useEffect(() => {
@@ -77,6 +82,8 @@ export default function ChatWidget() {
             onClose={() => setIsOpen(false)}
             currentSize={size}
             onResize={setSize}
+            messages={messages}
+            setMessages={setMessages}
           />
         </motion.div>
       )}

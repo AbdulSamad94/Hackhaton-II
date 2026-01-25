@@ -24,6 +24,9 @@ dependencies = [
     "pytest>=9.0.2",
     "openai-agents>=0.6.5",
     "jose>=1.0.0",
+    "openai>=2.15.0",
+    "rich>=14.2.0",
+    "mcp[cli]>=1.25.0",
 ]
 
 [project.optional-dependencies]

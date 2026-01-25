@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Send } from "lucide-react";
 
 interface ChatInputProps {
@@ -8,11 +8,21 @@ interface ChatInputProps {
 
 export default function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
   const [inputValue, setInputValue] = useState("");
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Auto-focus on mount and when re-enabled
+  useEffect(() => {
+    if (!disabled) {
+      textareaRef.current?.focus();
+    }
+  }, [disabled]);
 
   const trySendMessage = () => {
     if (inputValue.trim() && !disabled) {
       onSendMessage(inputValue.trim());
       setInputValue("");
+      // Refocus immediately after clearing, in case loading is very fast
+      textareaRef.current?.focus();
     }
   };
 
@@ -31,6 +41,7 @@ export default function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
   return (
     <form onSubmit={handleSubmit} className="flex gap-2 items-end">
       <textarea
+        ref={textareaRef}
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
         onKeyDown={handleKeyDown}
@@ -39,6 +50,7 @@ export default function ChatInput({ onSendMessage, disabled }: ChatInputProps) {
         rows={1}
         disabled={disabled}
         style={{ minHeight: "44px", maxHeight: "120px" }}
+        autoFocus
       />
       <button
         type="submit"
