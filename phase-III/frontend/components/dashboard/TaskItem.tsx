@@ -51,15 +51,26 @@ export default function TaskItem({
 
       {/* Content */}
       <div className="flex-1 min-w-0 pt-0.5">
-        <h4
-          className={`text-base font-medium transition-colors duration-300 ${
-            isCompleted
-              ? "text-slate-400 line-through decoration-slate-300"
-              : "text-slate-800"
-          }`}
-        >
-          {task.title}
-        </h4>
+        <div className="flex items-center gap-2">
+          <span
+            className={`text-xs font-medium px-1.5 py-0.5 rounded-md ${
+              isCompleted
+                ? "bg-slate-100 text-slate-400"
+                : "bg-blue-100 text-blue-600"
+            }`}
+          >
+            #{task.id}
+          </span>
+          <h4
+            className={`text-base font-medium transition-colors duration-300 ${
+              isCompleted
+                ? "text-slate-400 line-through decoration-slate-300"
+                : "text-slate-800"
+            }`}
+          >
+            {task.title}
+          </h4>
+        </div>
 
         {task.description && (
           <p

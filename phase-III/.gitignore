@@ -12,6 +12,8 @@ env/
 .venv
 venv
 env
+.agent/
+.claude/skills/
 
 # Builds
 build/

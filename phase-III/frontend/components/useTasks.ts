@@ -31,6 +31,17 @@ export function useTasks() {
         fetchTasks();
     }, [fetchTasks]);
 
+    useEffect(() => {
+        const handleTasksUpdated = () => {
+            fetchTasks();
+        };
+
+        window.addEventListener("tasks-updated", handleTasksUpdated);
+        return () => {
+            window.removeEventListener("tasks-updated", handleTasksUpdated);
+        };
+    }, [fetchTasks]);
+
     const createTask = async (taskData: { title: string; description?: string }) => {
         try {
             setError(null);

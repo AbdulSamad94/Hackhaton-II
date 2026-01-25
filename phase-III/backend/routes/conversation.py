@@ -2,7 +2,9 @@ from dependencies.auth import get_current_user
 from fastapi import APIRouter, HTTPException, Depends
 from services.chat_service import ChatService
 from models.chat import ChatRequest, ChatResponse
-from models.conversation import Message, Conversation
+from models.chat import ChatRequest, ChatResponse
+
+# from models.conversation import Message, Conversation # DB models no longer used in this route
 from database import get_session
 from sqlmodel import Session, select
 import logging
@@ -25,7 +27,7 @@ async def chat_endpoint(
     try:
         answer = await chat_service.process_message(req, user_id, session)
         return ChatResponse(
-            conversation_id=req.conversation_id,
+            conversation_id=req.conversation_id or -1,  # Return -1 for stateless chat
             response=answer,
             timestamp=datetime.utcnow(),
         )

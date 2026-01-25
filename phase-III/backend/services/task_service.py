@@ -1,5 +1,5 @@
 from typing import List
-from sqlmodel import Session
+from sqlmodel import Session, select
 from models.task import Task
 from schemas.task_schemas import TaskCreate, TaskUpdate, TaskToggleComplete
 from utils.errors import TaskNotFoundException, UnauthorizedTaskAccessException
@@ -8,7 +8,8 @@ from utils.errors import TaskNotFoundException, UnauthorizedTaskAccessException
 class TaskService:
     @staticmethod
     def get_tasks_for_user(user_id: str, db: Session) -> List[Task]:
-        return db.query(Task).filter(Task.user_id == user_id).all()
+        statement = select(Task).where(Task.user_id == user_id)
+        return db.exec(statement).all()
 
     @staticmethod
     def create_task(user_id: str, task: TaskCreate, db: Session) -> Task:
@@ -28,6 +29,17 @@ class TaskService:
             raise UnauthorizedTaskAccessException()
 
         return task
+
+    @staticmethod
+    def get_tasks_by_title(user_id: str, title: str, db: Session) -> List[Task]:
+        """
+        Find tasks by title (case-insensitive partial match).
+        Returns all matching tasks for disambiguation.
+        """
+        statement = select(Task).where(
+            Task.user_id == user_id, Task.title.ilike(f"%{title}%")
+        )
+        return list(db.exec(statement).all())
 
     @staticmethod
     def update_task(
