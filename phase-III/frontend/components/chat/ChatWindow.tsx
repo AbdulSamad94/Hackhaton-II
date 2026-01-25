@@ -45,7 +45,29 @@ export default function ChatWindow({
   };
 
   const handleSendMessage = async (message: string) => {
-    if (!currentUserId || !message.trim()) return;
+    if (!message.trim()) return;
+
+    if (!currentUserId) {
+      // Show user their message first
+      const userMessage: MessageType = {
+        id: crypto.randomUUID(),
+        role: "user",
+        content: message,
+        timestamp: new Date().toISOString(),
+      };
+
+      // Add a system reminder
+      const authMessage: MessageType = {
+        id: crypto.randomUUID(),
+        role: "assistant",
+        content:
+          "Please log in first to continue the chat and manage your tasks.",
+        timestamp: new Date().toISOString(),
+      };
+
+      setMessages((prev) => [...prev, userMessage, authMessage]);
+      return;
+    }
 
     // Add user message optimistically
     const userMessage: MessageType = {
