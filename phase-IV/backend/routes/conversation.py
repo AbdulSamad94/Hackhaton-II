@@ -3,7 +3,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from services.chat_service import ChatService
 from models.chat import ChatRequest, ChatResponse
 
-# from models.conversation import Message, Conversation # DB models no longer used in this route
+from models.conversation import Message, Conversation
 from database import get_session
 from sqlmodel import Session, select
 import logging
