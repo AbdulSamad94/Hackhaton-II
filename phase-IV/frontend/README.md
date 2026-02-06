@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Frontend - Dockerized Next.js
 
-## Getting Started
+This is the containerized Next.js frontend for Phase IV, featuring enterprise-grade build optimizations and safe environment handling.
 
-First, run the development server:
+## Dockerization Strategy
+
+### 1. Standalone Output Optimization
+
+We have enabled `output: 'standalone'` in `next.config.ts`.
+
+- **What it does**: Instead of requiring the entire `node_modules` folder, Next.js builds a single, minimal `server.js` file that contains only the code needed to run the app.
+- **Benefit**: Reduces the final Docker image size from ~1GB to **less than 150MB**.
+
+### 2. Multi-Stage Build
+
+Our `Dockerfile` follows three distinct stages for maximum efficiency:
+
+- **`deps` stage**: Installs only the necessary packages (using `pnpm`).
+- **`builder` stage**: Compiles the app and generates the standalone output.
+- **`runner` stage**: The final production image. It only contains the bare minimum files and is based on the lightweight `node:20-alpine` image.
+
+### 3. Build-Time vs Run-Time Envs
+
+- **Build-Time (`ARG`)**: Next.js requires `NEXT_PUBLIC_` variables to be available during the build phase to "bake" them into the JavaScript. We pass these via Docker `args`.
+- **Run-Time (`ENV`)**: Any changes made to environment variables after the build (at run-time) will be picked up by the server if they don't start with `NEXT_PUBLIC_`.
+
+---
+
+## Local Development (Docker)
+
+To run the frontend as part of the full stack:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# From the phase-IV root
+docker compose up --build frontend
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+To run only the frontend:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+docker compose up frontend
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Security
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Non-Root User**: The application is executed by the `nextjs` user for system safety.
+- **Sensitive Files**: `.dockerignore` ensures that local logs, node_modules, and build caches are never included in the production image.

@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Frontend - TodoFlow Chat UI
 
-## Getting Started
+This is the Next.js frontend for Phase III, featuring a premium specs-driven AI Chatbot interface.
 
-First, run the development server:
+## Features
+
+### 1. Advanced Chatbot Interface
+
+- **ChatWidget**: A floating bubble that opens the main chat window.
+- **ChatWindow**: A fully animated interface with staggered message entrances.
+- **Lucide Icons**: Modern, high-quality icons used throughout the chat UI.
+
+### 2. Intelligent Resizing
+
+The chat window supports four distinct sizing modes via a custom state machine:
+
+- **Small (Default)**: Compact view for quick interactions.
+- **Medium**: Balanced size for reading longer responses.
+- **Large**: Expansive view for complex management tasks.
+- **Full-screen**: Takes over the viewport for an immersive experience.
+
+### 3. Stateless History Management
+
+- The chat history is maintained in the React state (`messages` array).
+- This history is sent to the backend with every request, ensuring the API can provide context-aware responses without needing an expensive session database.
+
+---
+
+## Development
+
+### Prerequisites
+
+- Node.js 18+
+- [pnpm](https://pnpm.io/) (Highly Recommended)
+
+### Installation
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Using pnpm (Recommended)
+pnpm install
+
+# Using npm
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Config & Environment
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Create a `.env` file in this directory based on `.env.example`:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+NEXT_PUBLIC_API_URL=http://localhost:8000/api
+```
 
-## Learn More
+### Running the App
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+pnpm dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Styling & Animation
 
-## Deploy on Vercel
+- **Tailwind CSS**: Utility-first styling for the entire interface.
+- **Framer Motion**: Powering all transitions, including button hover states, window opening/closing, and resizing animations.
+- **Theme**: A premium Indigo/Slate color palette that matches modern Spec-driven designs.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📁 Key Components
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `components/ChatWidget.tsx`: The main entry point for the chatbot.
+- `components/ChatWindow.tsx`: The primary container for the chat interface.
+- `components/MessageList.tsx`: Handles rendering of user and assistant messages.
+- `lib/api.ts`: Centralized Axios configuration for backend communication.

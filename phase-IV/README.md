@@ -1,75 +1,71 @@
-# Phase III: Specs-Driven AI Chatbot Integration
+# Phase IV: Dockerization & Production-Ready Setup
 
-Phase III of the TodoFlow project focuses on integrating a production-grade AI assistant using the **Model Context Protocol (MCP)** and modern UI/UX principles.
+Phase IV of the TodoFlow project focuses on containerizing the entire application stack and implementing industry-standard practices for environment management and cloud deployment.
 
-## 🚀 Key Features
+## Key Features
 
-### 1. Intelligent AI Assistant
+### 1. Full Stack Dockerization
 
-- **Natural Language Task Management**: Users can add, list, update, complete, and delete tasks using conversational English.
-- **Context-Aware**: The assistant maintains short-term conversational history for follow-up questions.
-- **Disambiguation Flow**: If multiple tasks match a title, the assistant intelligently asks the user for clarification.
+- **Backend**: Multi-stage build using `python:3.12-slim` and **`uv`** for lightweight, high-performance images.
+- **Frontend**: Optimized multi-stage build using **Next.js Standalone output**, reducing image size by over 80%.
+- **Orchestration**: A unified `docker-compose.yml` that manages both services and their networking.
 
-### 2. MCP (Model Context Protocol) Server
+### 2. Production-Ready Environments
 
-- **Standardized Tools**: Exposes the backend's `TaskService` as MCP tools, making them compatible with any MCP-enabled AI client.
-- **Shared Resolution Logic**: Centralized task identification logic (ID vs. Title) ensures consistent behavior across all tools.
-- **Optimized Queries**: Task filtering and status updates are performed at the database level for maximum performance.
+- **Variable Substitution**: Use of `${VARIABLE_NAME}` in Docker Compose allows the same configuration to work locally and in the cloud.
+- **Centralized Secrets**: A single `.env` file at the root handles all configuration for both services.
+- **Security**: Containers run as **non-root users** (`appuser` and `nextjs`) for enhanced security.
 
-### 3. Premium Chat UI
+### 3. NeonDB Cloud Integration
 
-- **Modern Aesthetic**: A clean, "SaaS-style" interface using Lucide icons and an Indigo/Slate theme.
-- **Dynamic Resizing**: Responsive chat window with four distinct size modes (Small, Medium, Large, Full-screen).
-- **Stateless Architecture**: Frontend-managed history ensures the backend remains lightweight and scalable.
+- The setup is pre-configured to connect to your **NeonDB** PostgreSQL instance, ensuring your data lives in the cloud while your app runs in containers.
 
-## 🏗️ Technical Architecture
+---
 
-### Backend (`/backend`)
+## Technical Architecture
 
-- **FastAPI**: Serves the main application API.
-- **SQLModel**: ORM for PostgreSQL (Neon) interaction.
-- **Package Structure**: Standardized Python package structure with proper `__init__.py` files and absolute imports.
-- **Agent SDK**: Leverages OpenAI/Gemini compatibility layer for agent execution.
+### Infrastructure
 
-### MCP Layer (`/backend/mcp_server`)
+- **Docker**: Containerization platform.
+- **Docker Compose**: Orchestration tool for multi-container applications.
+- **Alpine/Slim Images**: Minimal base images for security and speed.
 
-- **FastMCP**: Official Python SDK for building MCP servers.
-- **Tools**: Modular tool definitions in `tools/` using a shared `tool_utils.py` for task resolution.
-- **Start Script**: `start_server.py` for independent MCP process execution.
+---
 
-### Frontend (`/frontend`)
+## Getting Started (Docker Mode)
 
-- **Next.js & React**: Core application framework.
-- **Framer Motion**: Smooth animations for transitions and resizing.
-- **ChatWidget/Window**: Encapsulated chatbot components for easy integration.
+### Prerequisites
 
-## 🛠️ Getting Started
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running.
 
-### Backend Setup
+### 1. Environment Setup
 
-1. Install dependencies:
-   ```bash
-   pip install -e .
-   ```
-2. Set up environment variables in `.env`:
-   - `GEMINI_API_KEY`
-   - `DATABASE_URL`
+Create a `.env` file in the `phase-IV/` root directory (copy from `.env.example`).
+All variables (Backend & Frontend) are now managed from this single file.
 
-### Running the MCP Server
+### 2. Start the Application
+
+Run the following command from the `phase-IV/` directory:
 
 ```bash
-python mcp_server/start_server.py
+docker compose up --build
 ```
 
-### Running the Web App
+### 3. Access the Services
 
-```bash
-npm run dev
-```
+- **Frontend**: [http://localhost:3000](http://localhost:3000)
+- **Backend API Docs**: [http://localhost:8000/docs](http://localhost:8000/docs)
 
-## 📝 Recent Optimizations (PR Fixes)
+---
 
-- Removed `sys.path.append` anti-patterns in favor of a proper package structure.
-- Moved Python-side filtering to the Database (`select().where()`).
-- Unified task resolution logic into a single helper function.
-- Standardized error handling to provide specific database feedback.
+## Deployment Concepts
+
+- **Images**: Built once, run anywhere.
+- **Registry**: Push images to Docker Hub or GitHub Container Registry.
+- **Cloud Hosting**: Deploy to platforms like Render, Railway, or DigitalOcean by simply connecting your repo and setting your Enviroment Variables in their dashboard.
+
+## Recent Optimizations
+
+- **Build Arguments**: Resolved Better Auth build-time errors by passing the API URL during the build phase.
+- **Fast Builds**: Leveraged Docker layer caching for rapid rebuilds.
+- **Standalone Output**: Enabled Next.js standalone mode for professional-grade deployment.
