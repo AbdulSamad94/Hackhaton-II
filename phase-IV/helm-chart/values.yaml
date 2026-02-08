@@ -1,0 +1,61 @@
+# Default values for todo-app.
+# This is a YAML-formatted file.
+
+global:
+  domain: todo.local
+
+backend:
+  name: todo-backend
+  image:
+    repository: phase-iv-backend
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 8000
+  env:
+    APP_NAME: "Todo Flow API"
+    DEBUG: "false"
+    API_PREFIX: "/api"
+    JWT_EXPIRATION_DAYS: "7"
+    FRONTEND_URL: "http://todo.local"
+
+frontend:
+  name: todo-frontend
+  image:
+    repository: phase-iv-frontend
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 3000
+  env:
+    NEXT_PUBLIC_API_URL: "http://todo.local/api"
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+  hosts:
+    - host: todo.local
+      paths:
+        - path: /api
+          pathType: Prefix
+          service: todo-backend
+        - path: /
+          pathType: Prefix
+          service: todo-frontend
+
+# SENSITIVE DATA: In a real production environment,
+# you should NEVER commit these to Git.
+# Use 'helm install --set secrets.DATABASE_URL=...' instead.
+secrets:
+  DATABASE_URL: "YOUR_DATABASE_URL"
+  SECRET_KEY: "YOUR_SECRET_KEY"
+  GEMINI_API_KEY: "YOUR_GEMINI_API_KEY"
+  OPENAI_API_KEY: "YOUR_OPENAI_API_KEY"
+  GITHUB_CLIENT_ID: "YOUR_GITHUB_CLIENT_ID"
+  GITHUB_CLIENT_SECRET: "YOUR_GITHUB_CLIENT_SECRET"
+  GOOGLE_CLIENT_ID: "YOUR_GOOGLE_CLIENT_ID"
+  GOOGLE_CLIENT_SECRET: "YOUR_GOOGLE_CLIENT_SECRET"

@@ -1,71 +1,197 @@
-# Phase IV: Dockerization & Production-Ready Setup
+# Phase IV: Dockerization & Kubernetes Deployment
 
-Phase IV of the TodoFlow project focuses on containerizing the entire application stack and implementing industry-standard practices for environment management and cloud deployment.
+Phase IV of the TodoFlow project focuses on containerizing the entire application stack and deploying it to a local Kubernetes cluster using Helm.
 
-## Key Features
-
-### 1. Full Stack Dockerization
-
-- **Backend**: Multi-stage build using `python:3.12-slim` and **`uv`** for lightweight, high-performance images.
-- **Frontend**: Optimized multi-stage build using **Next.js Standalone output**, reducing image size by over 80%.
-- **Orchestration**: A unified `docker-compose.yml` that manages both services and their networking.
-
-### 2. Production-Ready Environments
-
-- **Variable Substitution**: Use of `${VARIABLE_NAME}` in Docker Compose allows the same configuration to work locally and in the cloud.
-- **Centralized Secrets**: A single `.env` file at the root handles all configuration for both services.
-- **Security**: Containers run as **non-root users** (`appuser` and `nextjs`) for enhanced security.
-
-### 3. NeonDB Cloud Integration
-
-- The setup is pre-configured to connect to your **NeonDB** PostgreSQL instance, ensuring your data lives in the cloud while your app runs in containers.
-
----
-
-## Technical Architecture
-
-### Infrastructure
-
-- **Docker**: Containerization platform.
-- **Docker Compose**: Orchestration tool for multi-container applications.
-- **Alpine/Slim Images**: Minimal base images for security and speed.
-
----
-
-## Getting Started (Docker Mode)
+## 🚀 Quick Start
 
 ### Prerequisites
 
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running.
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running
+- [Minikube](https://minikube.sigs.k8s.io/docs/start/) installed
+- [Helm](https://helm.sh/docs/intro/install/) installed
+- [kubectl](https://kubernetes.io/docs/tasks/tools/) installed
 
-### 1. Environment Setup
+---
 
-Create a `.env` file in the `phase-IV/` root directory (copy from `.env.example`).
-All variables (Backend & Frontend) are now managed from this single file.
+## Option 1: Docker Compose (Simple)
 
-### 2. Start the Application
+Best for quick local development.
 
-Run the following command from the `phase-IV/` directory:
+### Step 1: Setup Environment
+
+```bash
+cd phase-IV
+cp .env.example .env
+# Edit .env with your actual credentials
+```
+
+### Step 2: Run
 
 ```bash
 docker compose up --build
 ```
 
-### 3. Access the Services
+### Step 3: Access
 
-- **Frontend**: [http://localhost:3000](http://localhost:3000)
-- **Backend API Docs**: [http://localhost:8000/docs](http://localhost:8000/docs)
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:8000/docs
 
 ---
 
-## Deployment Concepts
+## Option 2: Kubernetes with Helm (Production-like)
 
-- **Images**: Built once, run anywhere.
-- **Registry**: Push images to Docker Hub or GitHub Container Registry.
-- **Cloud Hosting**: Deploy to platforms like Render, Railway, or DigitalOcean by simply connecting your repo and setting your Enviroment Variables in their dashboard.
+Best for testing production deployment workflows.
 
-## Recent Optimizations
+### Step 1: Start Minikube
 
-- **Build Arguments**: Resolved Better Auth build-time errors by passing the API URL during the build phase.
-- **Fast Builds**: Leveraged Docker layer caching for rapid rebuilds.
-- **Standalone Output**: Enabled Next.js standalone mode for professional-grade deployment.
+```powershell
+minikube start
+minikube addons enable ingress
+```
+
+### Step 2: Setup Environment
+
+```bash
+cp .env.example .env
+# Edit .env with your actual credentials
+```
+
+### Step 3: Build Docker Images
+
+```powershell
+# Build Backend
+docker build -t todo-backend:latest ./backend
+
+# Build Frontend (with API URL for localhost)
+docker build -t todo-frontend:latest --build-arg NEXT_PUBLIC_API_URL=http://localhost:8000/api ./frontend
+```
+
+### Step 4: Load Images into Minikube
+
+```powershell
+minikube image load todo-backend:latest
+minikube image load todo-frontend:latest
+```
+
+### Step 5: Deploy with Script
+
+```powershell
+./scripts/deploy.ps1
+```
+
+When prompted with "Do you want to start LOCAL PORT-FORWARDING instead? (y/n)", enter `y`.
+
+### Step 6: Access
+
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:8000/docs
+
+---
+
+## 📁 Project Structure
+
+```
+phase-IV/
+├── backend/                 # FastAPI backend
+│   ├── Dockerfile
+│   └── ...
+├── frontend/                # Next.js frontend
+│   ├── Dockerfile
+│   └── ...
+├── helm-chart/              # Helm chart for Kubernetes
+│   ├── Chart.yaml
+│   ├── values.yaml
+│   └── templates/
+├── scripts/
+│   └── deploy.ps1           # Automated deployment script
+├── docker-compose.yml
+├── .env.example
+└── README.md
+```
+
+---
+
+## 🔧 Useful Commands
+
+### Check Pod Status
+
+```powershell
+kubectl get pods
+```
+
+### View Pod Logs
+
+```powershell
+kubectl logs -l app=todo-backend
+kubectl logs -l app=todo-frontend
+```
+
+### Manual Port Forwarding
+
+```powershell
+kubectl port-forward svc/todo-frontend 3000:80
+kubectl port-forward svc/todo-backend 8000:8000
+```
+
+### Helm Commands
+
+```powershell
+helm list                    # List releases
+helm status todo-app         # Check release status
+helm uninstall todo-app      # Remove deployment
+```
+
+### Minikube Commands
+
+```powershell
+minikube status              # Check cluster status
+minikube stop                # Stop cluster
+minikube delete              # Delete cluster
+```
+
+---
+
+## 🔒 Security Notes
+
+- **Never commit `.env`** - It contains your real secrets
+- **`.env.example`** is safe to commit - It only contains placeholders
+- **`values.yaml`** uses placeholder values - Real secrets are injected at deploy time by `deploy.ps1`
+
+---
+
+## 🏗️ Architecture
+
+### Docker Images
+
+- **Backend**: `python:3.12-slim` with `uv` package manager
+- **Frontend**: `node:20-alpine` with Next.js standalone output
+
+### Kubernetes Resources
+
+- **Deployments**: Backend and Frontend pods
+- **Services**: ClusterIP services for internal communication
+- **Secrets**: Managed via Helm from `.env` file
+- **Ingress**: Optional nginx ingress for domain-based access
+
+---
+
+## 🐛 Troubleshooting
+
+### Pods not starting?
+
+```powershell
+kubectl describe pod <pod-name>
+kubectl logs <pod-name>
+```
+
+### Port already in use?
+
+Close any existing port-forward terminals before running `deploy.ps1` again.
+
+### Image not updating?
+
+```powershell
+docker build --no-cache -t todo-frontend:latest ./frontend
+minikube image load todo-frontend:latest
+./scripts/deploy.ps1
+```
