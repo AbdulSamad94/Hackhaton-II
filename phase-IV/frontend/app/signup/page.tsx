@@ -63,8 +63,8 @@ function FloatingLabelInput({
           error
             ? "border-red-300 ring-2 ring-red-100 bg-red-50/10"
             : isFocused
-            ? "border-blue-600 ring-2 ring-blue-100 bg-white"
-            : "border-gray-200 bg-white"
+              ? "border-blue-600 ring-2 ring-blue-100 bg-white"
+              : "border-gray-200 bg-white"
         }`}
       >
         <Input
@@ -138,8 +138,8 @@ function PasswordStrength({ password }: { password: string }) {
             strength <= 1
               ? "text-red-500"
               : strength <= 3
-              ? "text-yellow-600"
-              : "text-green-600"
+                ? "text-yellow-600"
+                : "text-green-600"
           }`}
         >
           {getLabel()}
