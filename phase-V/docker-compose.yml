@@ -1,0 +1,78 @@
+services:
+  # --- Infrastructure ---
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.0
+    container_name: todo-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: todo-kafka
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    depends_on:
+      - zookeeper
+
+  # --- Application Services ---
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: todo-backend
+    env_file: .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - kafka
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8000/api}
+    container_name: todo-frontend
+    env_file: .env
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+
+  # --- Event-Driven Services (for future Dapr integration) ---
+  # Note: These services are designed to work with Dapr sidecars.
+  # For local dev without Dapr, they will start but won't receive events.
+
+  notification-service:
+    build:
+      context: ./services/notification-service
+      dockerfile: Dockerfile
+    container_name: todo-notification-service
+    env_file: .env
+    ports:
+      - "8001:8001"
+    depends_on:
+      - kafka
+
+  recurring-task-service:
+    build:
+      context: ./services/recurring-task-service
+      dockerfile: Dockerfile
+    container_name: todo-recurring-service
+    env_file: .env
+    ports:
+      - "8002:8002"
+    depends_on:
+      - kafka
