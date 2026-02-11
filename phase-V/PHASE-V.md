@@ -400,18 +400,18 @@ kubectl get pods -n dapr-system
 apiVersion: dapr.io/v1alpha1
 kind: Component
 metadata:
-  name: kafka-pubsub
+  name: pubsub
   namespace: default
 spec:
-  type: pubsub.kafka
+  type: pubsub.redis
   version: v1
   metadata:
-    - name: brokers
-      value: "todo-kafka-kafka-bootstrap.kafka.svc.cluster.local:9092"
-    - name: consumerGroup
-      value: "todo-service"
-    - name: authType
-      value: "none"
+    - name: redisHost
+      value: "redis.default.svc.cluster.local:6379"
+    - name: redisPassword
+      secretKeyRef:
+        name: redis-secret
+        key: password
 ```
 
 **Create file:** `dapr-components/statestore.yaml`
@@ -423,13 +423,17 @@ metadata:
   name: statestore
   namespace: default
 spec:
-  type: state.postgresql
+  type: state.redis
   version: v1
   metadata:
-    - name: connectionString
+    - name: redisHost
+      value: "redis.default.svc.cluster.local:6379"
+    - name: redisPassword
       secretKeyRef:
-        name: todo-secrets
-        key: database-url
+        name: redis-secret
+        key: password
+    - name: actorStateStore
+      value: "true"
 ```
 
 **Deploy Dapr components:**
@@ -476,7 +480,7 @@ async def handle_reminder(event: dict):
 def subscribe():
     return [
         {
-            "pubsubname": "kafka-pubsub",
+            "pubsubname": "pubsub",
             "topic": "reminders",
             "route": "/reminders"
         }
@@ -557,7 +561,7 @@ async def handle_task_completed(event: dict):
 def subscribe():
     return [
         {
-            "pubsubname": "kafka-pubsub",
+            "pubsubname": "pubsub",
             "topic": "task-events",
             "route": "/task-completed"
         }
@@ -591,7 +595,7 @@ async def create_task(user_id: str, task: TaskCreate):
         }
 
         client.publish_event(
-            pubsub_name="kafka-pubsub",
+            pubsub_name="pubsub",
             topic_name="task-events",
             data=json.dumps(event_data)
         )
@@ -612,7 +616,7 @@ async def complete_task(user_id: str, task_id: int):
         }
 
         client.publish_event(
-            pubsub_name="kafka-pubsub",
+            pubsub_name="pubsub",
             topic_name="task-events",
             data=json.dumps(event_data)
         )

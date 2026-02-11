@@ -21,7 +21,7 @@ backend:
     DEBUG: "true"
     API_PREFIX: "/api"
     JWT_EXPIRATION_DAYS: "7"
-    FRONTEND_URL: "http://localhost:8080" # Local port-forward URL
+    FRONTEND_URL: "http://localhost:3000" # Local port-forward URL
 
 frontend:
   name: todo-frontend
@@ -33,7 +33,7 @@ frontend:
     type: LoadBalancer
     port: 3000
   env:
-    NEXT_PUBLIC_API_URL: "http://localhost:8080/api" # Local port-forward URL
+    NEXT_PUBLIC_API_URL: "http://localhost:8000/api" # Local port-forward URL
 
 ingress:
   enabled: false # Disable ingress for local Minikube testing via port-forward

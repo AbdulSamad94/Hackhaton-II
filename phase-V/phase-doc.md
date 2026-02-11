@@ -355,15 +355,17 @@ await httpx.post(
 apiVersion: dapr.io/v1alpha1
 kind: Component
 metadata:
-  name: kafka-pubsub
+  name: pubsub
 spec:
-  type: pubsub.kafka
+  type: pubsub.redis
   version: v1
   metadata:
-    - name: brokers
-      value: "kafka:9092"
-    - name: consumerGroup
-      value: "todo-service"
+    - name: redisHost
+      value: "redis.default.svc.cluster.local:6379"
+    - name: redisPassword
+      secretKeyRef:
+        name: redis-secret
+        key: password
 ```
 
 ### Use Case 2: State Management (Conversation State)
@@ -406,11 +408,17 @@ kind: Component
 metadata:
   name: statestore
 spec:
-  type: state.postgresql
+  type: state.redis
   version: v1
   metadata:
-    - name: connectionString
-      value: "host=neon.db user=... password=... dbname=todo"
+    - name: redisHost
+      value: "redis.default.svc.cluster.local:6379"
+    - name: redisPassword
+      secretKeyRef:
+        name: redis-secret
+        key: password
+    - name: actorStateStore
+      value: "true"
 ```
 
 ### Use Case 3: Service Invocation (Frontend → Backend)
@@ -532,9 +540,9 @@ api_key = response.json()["openai-api-key"]
 │                          ┌────────────▼────────────┐                                 │
 │                          │    DAPR COMPONENTS      │                                 │
 │                          │  ┌──────────────────┐   │                                 │
-│                          │  │ pubsub.kafka     │───┼────▶ Cluster Kafka             │
+│                          │  │ pubsub.redis     │───┼────▶ Cluster Redis             │
 │                          │  ├──────────────────┤   │                                 │
-│                          │  │ state.postgresql │───┼────▶ Neon DB                    │
+│                          │  │ state.redis      │───┼────▶ Cluster Redis             │
 │                          │  ├──────────────────┤   │                                 │
 │                          │  │ scheduler        │   │  (Scheduled triggers)           │
 │                          │  ├──────────────────┤   │                                 │
@@ -548,8 +556,8 @@ api_key = response.json()["openai-api-key"]
 
 | Component          | Type                    | Purpose                                  |
 | ------------------ | ----------------------- | ---------------------------------------- |
-| kafka-pubsub       | pubsub.kafka            | Event streaming (task-events, reminders) |
-| statestore         | state.postgresql        | Conversation state, task cache           |
+| pubsub             | pubsub.redis            | Event streaming (task-events, reminders) |
+| statestore         | state.redis             | Conversation state, task cache           |
 | dapr-jobs          | Jobs API                | Trigger reminder checks                  |
 | kubernetes-secrets | secretstores.kubernetes | API keys, DB credentials                 |
 

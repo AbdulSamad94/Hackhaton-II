@@ -22,7 +22,6 @@ COPY --from=builder /install /usr/local
 
 # Copy application code
 COPY . .
-RUN rm -f .env
 
 # Create a non-root user and switch to it
 RUN adduser --disabled-password --gecos "" appuser && chown -R appuser /app
