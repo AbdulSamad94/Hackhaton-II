@@ -4,10 +4,14 @@ metadata:
   name: statestore
   namespace: default
 spec:
-  type: state.postgresql
+  type: state.redis
   version: v1
   metadata:
-    - name: connectionString
+    - name: redisHost
+      value: "redis.default.svc.cluster.local:6379"
+    - name: redisPassword
       secretKeyRef:
-        name: postgres-secret
-        key: connectionString
+        name: redis-secret
+        key: password
+    - name: actorStateStore
+      value: "true"

@@ -4,58 +4,44 @@
 global:
   domain: todo.local
 
-registry: ghcr.io/username
-imagePullPolicy: IfNotPresent
+registry: "" # Empty for local images
+imagePullPolicy: Never # Never pull because we built them locally
 
 backend:
   name: todo-backend
   image:
     repository: todo-backend
     tag: latest
-    pullPolicy: IfNotPresent
+    pullPolicy: Never
   service:
     type: ClusterIP
     port: 8000
   env:
     APP_NAME: "Todo Flow API"
-    DEBUG: "false"
+    DEBUG: "true"
     API_PREFIX: "/api"
     JWT_EXPIRATION_DAYS: "7"
-    FRONTEND_URL: "http://todo.example.com"
+    FRONTEND_URL: "http://localhost:3000" # Local port-forward URL
 
 frontend:
   name: todo-frontend
   image:
     repository: todo-frontend
     tag: latest
-    pullPolicy: IfNotPresent
+    pullPolicy: Never
   service:
     type: LoadBalancer
     port: 3000
   env:
-    NEXT_PUBLIC_API_URL: "http://todo.local/api"
+    NEXT_PUBLIC_API_URL: "http://localhost:8000/api" # Local port-forward URL
 
 ingress:
-  enabled: true
-  className: "nginx"
-  annotations:
-    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
-  hosts:
-    - host: todo.local
-      paths:
-        - path: /api
-          pathType: Prefix
-          service: todo-backend
-        - path: /
-          pathType: Prefix
-          service: todo-frontend
+  enabled: false # Disable ingress for local Minikube testing via port-forward
 
-# SENSITIVE DATA: In a real production environment,
-# you should NEVER commit these to Git.
-# Use 'helm install --set secrets.DATABASE_URL=...' instead.
+# SENSITIVE DATA: Placeholders for security. Populate these for deployment.
 secrets:
-  DATABASE_URL: "YOUR_DATABASE_URL"
-  SECRET_KEY: "YOUR_SECRET_KEY"
+  DATABASE_URL: "YOUR_POSTGRES_CONNECTION_STRING"
+  SECRET_KEY: "YOUR_SECURE_SECRET_KEY"
   GEMINI_API_KEY: "YOUR_GEMINI_API_KEY"
   OPENAI_API_KEY: "YOUR_OPENAI_API_KEY"
   GITHUB_CLIENT_ID: "YOUR_GITHUB_CLIENT_ID"

@@ -34,10 +34,10 @@ def create_app() -> FastAPI:
     # Add security headers middleware
     app.add_middleware(SecurityHeadersMiddleware)
 
-    # Configure CORS
+    # Configure CORS - Allow all for local dev to fix port-forwarding issues
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=[settings.frontend_url],
+        allow_origins=["*"], # Allow all origins for local development
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
