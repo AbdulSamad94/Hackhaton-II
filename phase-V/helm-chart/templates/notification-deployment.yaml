@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: notification-service
-        image: {{ .Values.registry }}/notification-service:latest
+        image: {{ if .Values.registry }}{{ .Values.registry }}/{{ end }}notification-service:latest
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         ports:
         - containerPort: 8001

@@ -27,6 +27,8 @@ spec:
           ports:
             - containerPort: {{ .Values.backend.service.port }}
           env:
+            - name: DAPR_ENABLED
+              value: "true"
             {{- range $key, $value := .Values.backend.env }}
             - name: {{ $key }}
               value: {{ $value | quote }}
